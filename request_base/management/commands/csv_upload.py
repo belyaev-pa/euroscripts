@@ -1,10 +1,13 @@
-import csv
 #import logging
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from ...snippets import word_tokenize
+from ...snippets import word_tokenize, get_data
 from ...models import *
 #logger = logging.getLogger('default')
+import logging
+
+# add filemode="w" to overwrite
+logging.basicConfig(filename="sample.log", level=logging.INFO)
 
 class Command(BaseCommand):
     csv_file_path = settings.CSV_ROOT
@@ -64,8 +67,3 @@ class Command(BaseCommand):
             if iter % 10000 == 0:
                 print('######{}'.format(iter))
 
-def get_data(filename1):
-    with open(filename1, encoding='Windows-1251') as f_csv:
-        reader = csv.reader(f_csv, delimiter=';')
-        for row in reader:
-            yield (row)

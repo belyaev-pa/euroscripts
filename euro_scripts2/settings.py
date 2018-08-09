@@ -127,4 +127,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 CSV_ROOT = '/home/razrab4/Downloads/zaprosy.csv'
-#CSV_ROOT = '/home/razrab4/Downloads/text.csv'
+OUPPUT_ROOT = '/home/razrab4/Downloads/csv_outputs/'
