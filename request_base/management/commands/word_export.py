@@ -17,10 +17,7 @@ class Command(BaseCommand):
                                     quotechar='|', quoting=csv.QUOTE_MINIMAL)
             for word in Word.objects.all():
                 if not word.frequency:
-                    frequency = 0
-                    for link in word.link_set.all():
-                        frequency += link.phrase.frequency
-                    word.frequency = frequency
+                    word.frequency = sum(word.link_set.all().values_list('phrase__frequency', flat=True))
                     word.save()
                 word_writer.writerow([word.word, word.link_set.count(), word.frequency])
                 pass

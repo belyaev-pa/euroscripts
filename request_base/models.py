@@ -19,3 +19,8 @@ class Link(models.Model):
 
     class Meta:
         unique_together = ('word', 'phrase')
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=250, unique=True)
+    word = models.ManyToManyField()

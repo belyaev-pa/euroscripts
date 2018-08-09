@@ -128,3 +128,4 @@ STATIC_URL = '/static/'
 
 CSV_ROOT = '/home/razrab4/Downloads/zaprosy.csv'
 OUPPUT_ROOT = '/home/razrab4/Downloads/csv_outputs/'
+TAGS_ROOT = '/home/razrab4/Downloads/tags_vol1.xlsx'
