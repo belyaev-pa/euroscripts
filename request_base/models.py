@@ -11,6 +11,7 @@ class Word(models.Model):
     word = models.CharField(max_length=250, unique=True)
     #phrase = models.ManyToManyField(Phrase, blank=True, null=True)
     frequency = models.BigIntegerField(blank=True, null=True)
+    count = models.BigIntegerField(blank=True, null=True)
 
 
 class Link(models.Model):
@@ -23,4 +24,4 @@ class Link(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=250, unique=True)
-    word = models.ManyToManyField()
+    word = models.ManyToManyField(Word)

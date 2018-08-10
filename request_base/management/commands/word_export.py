@@ -11,13 +11,24 @@ class Command(BaseCommand):
     time_now = strftime("%Y-%m-%d_%H-%M-%S", gmtime())
     name = 'words_'+time_now+'.csv'
     csv_output_file = os.path.join(csv_output_path, name)
+
     def handle(self, *args, **kwargs):
-        with open(self.csv_output_file, 'w') as output_file:
-            word_writer = csv.writer(output_file, delimiter=' ',
+        with open(self.csv_output_file, 'w+', newline='') as output_file:
+            word_writer = csv.writer(output_file, delimiter=';',
                                     quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            for word in Word.objects.all():
-                if not word.frequency:
+            for word in Word.objects.all().order_by('-count'):
+                if kwargs['reset']:
                     word.frequency = sum(word.link_set.all().values_list('phrase__frequency', flat=True))
+                    word.count = word.link_set.count()
                     word.save()
-                word_writer.writerow([word.word, word.link_set.count(), word.frequency])
+                word_writer.writerow([word.word, word.count or word.link_set.count(), word.frequency or 0])
                 pass
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '-r',
+            '--reset',
+            action='store_true',
+            default=False,
+            help='Перерасчет значений в БД (затратна по времени)'
+        )
