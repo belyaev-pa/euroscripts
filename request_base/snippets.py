@@ -25,7 +25,7 @@ def get_data(filename1):
             yield (row)
 
 
-@lru_cache(maxsize=4)
+@lru_cache(maxsize=2)
 def get_tag_list(filename):
     """get list of tags and words from xlsx file
     [['tag', list], ['tag', list],...]       """
@@ -39,8 +39,10 @@ def get_tag_list(filename):
         phrase = worksheet[phrase_cell].value
         tag = worksheet[tag_cell].value
         item = list()
+        item.append(phrase)
         item.append(tag)
         item.append(word_tokenize(phrase))
         output_list.append(item)
+    print('get_tag_list - ended')
     return sorted(output_list, key = lambda s: len(s[1]), reverse=True)
 

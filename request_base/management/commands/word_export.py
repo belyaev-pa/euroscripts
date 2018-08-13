@@ -13,7 +13,7 @@ class Command(BaseCommand):
     csv_output_file = os.path.join(csv_output_path, name)
 
     def handle(self, *args, **kwargs):
-        with open(self.csv_output_file, 'w+', newline='') as output_file:
+        with open(self.csv_output_file, 'w+', newline='', encoding='Windows-1251') as output_file:
             word_writer = csv.writer(output_file, delimiter=';',
                                     quotechar='|', quoting=csv.QUOTE_MINIMAL)
             for word in Word.objects.all().order_by('-count'):
