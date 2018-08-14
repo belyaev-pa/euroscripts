@@ -15,7 +15,8 @@ class Command(BaseCommand):
     csv_output_file = settings.PHRASE_OUTPUT_ROOT
     @timer
     def handle(self, *args, **kwargs):
-#        phrase_list = Phrase.objects.filter(phrase_le__lte=4).order_by('phrase_len')#prefetch_related('link_set__word')
+        phrase_list = Phrase.objects.filter(phrase_len__lte=4).order_by('phrase_len')#prefetch_related('link_set__word')
+        print(phrase_list.count())
         with open(self.csv_output_file, 'w+', newline='', encoding='Windows-1251') as output_file:
             word_writer = csv.writer(output_file, delimiter=';',
                                     quotechar='|', quoting=csv.QUOTE_MINIMAL)
@@ -42,9 +43,9 @@ class Command(BaseCommand):
                         phrase_count = phrase_with_phrase.count()
                         phrase_frequency = phrase_with_phrase.aggregate(Sum('frequency'))
                         word_writer.writerow([phrase.phrase, phrase_count, phrase_frequency])
-                        from_begin += 1000
-                        till_end += 1000
                 else:
                     break
+                from_begin += 1000
+                till_end += 1000
                 print(from_begin)
 
