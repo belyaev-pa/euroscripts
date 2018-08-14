@@ -1,10 +1,11 @@
+import time
 import csv
 import openpyxl
 import pymorphy2
 import nltk
 import string
 from nltk.corpus import stopwords
-from functools import lru_cache
+from functools import lru_cache, wraps
 
 
 def word_tokenize(sentence):
@@ -46,3 +47,13 @@ def get_tag_list(filename):
     print('get_tag_list - ended')
     return sorted(output_list, key = lambda s: len(s[1]), reverse=True)
 
+
+
+def timer(f):
+#    @wraps()
+    def tmp(*args, **kwargs):
+        t = time.time()
+        res = f(*args, **kwargs)
+        print("f time - {} {}".format(str(time.time()-t), f.__name__, ))
+        return res
+    return tmp
