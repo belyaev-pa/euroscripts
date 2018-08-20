@@ -74,6 +74,8 @@ WSGI_APPLICATION = 'euro_scripts2.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
+# sudo service postgresql start
+
 
 
 DATABASES = {

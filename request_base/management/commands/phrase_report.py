@@ -15,7 +15,7 @@ class Command(BaseCommand):
     csv_output_file = settings.PHRASE_OUTPUT_ROOT
     @timer
     def handle(self, *args, **kwargs):
-        phrase_list = Phrase.objects.filter(phrase_len__lte=4).order_by('phrase_len', '-frequency')#prefetch_related('link_set__word')
+        phrase_list = Phrase.objects.filter(phrase_len__lte=4).order_by('phrase_len')#prefetch_related('link_set__word')
         print(phrase_list.count())
         t = time.time()
         with open(self.csv_output_file, 'w+', newline='', encoding='Windows-1251') as output_file:
