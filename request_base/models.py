@@ -7,6 +7,7 @@ class Phrase(models.Model):
     phrase_len = models.IntegerField()
     tag = models.ManyToManyField('request_base.TagPhrase', blank=True, null=True)
     untaged_words = models.ManyToManyField('request_base.Word', blank=True, null=True)
+    uncreated = models.BooleanField(default=False)
 
     def __str__(self):
         return '{}'.format(self.phrase)
