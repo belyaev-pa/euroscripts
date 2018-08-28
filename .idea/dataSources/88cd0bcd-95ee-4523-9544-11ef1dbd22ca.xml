@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="postgres@localhost">
+  <database-model serializer="dbm" rdbms="POSTGRES" format-version="4.10">
+    <root id="1">
+      <ServerVersion>9.5.14</ServerVersion>
+    </root>
+    <database id="2" parent="1" name="django-cms">
+      <ObjectId>33155</ObjectId>
+      <Owner>webvisor</Owner>
+    </database>
+    <database id="3" parent="1" name="django-cms2">
+      <ObjectId>34960</ObjectId>
+      <Owner>webvisor</Owner>
+    </database>
+    <database id="4" parent="1" name="euromed">
+      <ObjectId>49606</ObjectId>
+      <Owner>euromed</Owner>
+    </database>
+    <database id="5" parent="1" name="gjango-cms">
+      <ObjectId>33154</ObjectId>
+      <Owner>webvisor</Owner>
+    </database>
+    <database id="6" parent="1" name="postgres">
+      <ObjectId>12415</ObjectId>
+      <Comment>default administrative connection database</Comment>
+      <Owner>postgres</Owner>
+      <IntrospectionStateNumber>24</IntrospectionStateNumber>
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </database>
+    <database id="7" parent="1" name="wagtail">
+      <ObjectId>41324</ObjectId>
+      <Owner>webvisor</Owner>
+    </database>
+    <database id="8" parent="1" name="webvisor">
+      <ObjectId>16385</ObjectId>
+      <Owner>webvisor</Owner>
+    </database>
+    <database id="9" parent="1" name="webvisor2">
+      <ObjectId>25027</ObjectId>
+      <Owner>webvisor</Owner>
+    </database>
+    <database id="10" parent="1" name="webvisor3">
+      <ObjectId>25476</ObjectId>
+      <Owner>webvisor</Owner>
+    </database>
+    <database id="11" parent="1" name="webvisor4">
+      <ObjectId>25924</ObjectId>
+      <Owner>webvisor</Owner>
+    </database>
+    <role id="12" parent="1" name="euromed">
+      <ObjectId>49605</ObjectId>
+      <Inherit>1</Inherit>
+      <CanLogin>1</CanLogin>
+      <ConnectionLimit>-1</ConnectionLimit>
+      <ValidUntil>infinity</ValidUntil>
+    </role>
+    <role id="13" parent="1" name="postgres">
+      <ObjectId>10</ObjectId>
+      <SuperRole>1</SuperRole>
+      <Inherit>1</Inherit>
+      <CreateRole>1</CreateRole>
+      <CreateDb>1</CreateDb>
+      <CanLogin>1</CanLogin>
+      <Replication>1</Replication>
+      <ConnectionLimit>-1</ConnectionLimit>
+      <BypassRls>1</BypassRls>
+    </role>
+    <role id="14" parent="1" name="webvisor">
+      <ObjectId>16384</ObjectId>
+      <Inherit>1</Inherit>
+      <CanLogin>1</CanLogin>
+      <ConnectionLimit>100</ConnectionLimit>
+      <ValidUntil>infinity</ValidUntil>
+    </role>
+    <schema id="15" parent="6" name="information_schema">
+      <ObjectId>12123</ObjectId>
+      <Owner>postgres</Owner>
+    </schema>
+    <schema id="16" parent="6" name="pg_catalog">
+      <ObjectId>11</ObjectId>
+      <Comment>system catalog schema</Comment>
+      <Owner>postgres</Owner>
+    </schema>
+    <schema id="17" parent="6" name="pg_temp_1">
+      <ObjectId>11816</ObjectId>
+      <Owner>postgres</Owner>
+    </schema>
+    <schema id="18" parent="6" name="pg_toast">
+      <ObjectId>99</ObjectId>
+      <Comment>reserved schema for TOAST tables</Comment>
+      <Owner>postgres</Owner>
+    </schema>
+    <schema id="19" parent="6" name="pg_toast_temp_1">
+      <ObjectId>11817</ObjectId>
+      <Owner>postgres</Owner>
+    </schema>
+    <schema id="20" parent="6" name="public">
+      <ObjectId>2200</ObjectId>
+      <Comment>standard public schema</Comment>
+      <Owner>postgres</Owner>
+      <IntrospectionTimestamp>2018-08-22.11:49:34.129</IntrospectionTimestamp>
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </schema>
+    <access-method id="21" parent="6" name="btree">
+      <ObjectId>403</ObjectId>
+      <Comment>b-tree index access method</Comment>
+    </access-method>
+    <access-method id="22" parent="6" name="hash">
+      <ObjectId>405</ObjectId>
+      <Comment>hash index access method</Comment>
+    </access-method>
+    <access-method id="23" parent="6" name="gist">
+      <ObjectId>783</ObjectId>
+      <Comment>GiST index access method</Comment>
+    </access-method>
+    <access-method id="24" parent="6" name="gin">
+      <ObjectId>2742</ObjectId>
+      <Comment>GIN index access method</Comment>
+    </access-method>
+    <access-method id="25" parent="6" name="spgist">
+      <ObjectId>4000</ObjectId>
+      <Comment>SP-GiST index access method</Comment>
+    </access-method>
+    <access-method id="26" parent="6" name="brin">
+      <ObjectId>3580</ObjectId>
+      <Comment>block range index (BRIN) access method</Comment>
+    </access-method>
+  </database-model>
+</dataSource>
