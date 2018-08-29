@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'request_base.apps.RequestBaseConfig',
+    'ad_management',
 ]
 
 MIDDLEWARE = [
@@ -137,3 +138,6 @@ PHRASE_OUTPUT_ROOT = '/home/razrab4/Downloads/tags_input/output_phrase_in_phrase
 YANDEX_ROOT = '/home/razrab4/Downloads/yandex_upload'
 SEARCH_REPORT_ROOT = '/home/razrab4/Downloads/search_report_upload'
 DECODE_INPUT = '/home/razrab4/Downloads/decode_output'
+
+
+CLICK_AMOUNT = 100

@@ -2,21 +2,22 @@ from django.db import models
 
 
 class Company(models.Model):
-    name = models.CharField(max_length=256, verbose_name='Название компании')
+    name = models.CharField(max_length=256, verbose_name='Название компании', db_index=True)
+    number = models.BigIntegerField(verbose_name='Номер компании')
 
     def __str__(self):
         return '{}'.format(self.name)
 
 
 class PageType(models.Model):
-    name = models.CharField(max_length=256, verbose_name='Тип URL')
+    name = models.CharField(max_length=256, verbose_name='Тип URL', db_index=True)
 
     def __str__(self):
         return '{}'.format(self.name)
 
 
 class Request(models.Model):
-    name = models.TextField(verbose_name='Запрос')
+    name = models.TextField(verbose_name='Запрос', db_index=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, verbose_name='Компания')
 
     def __str__(self):
@@ -24,8 +25,8 @@ class Request(models.Model):
 
 
 class Advert(models.Model):
-    head1 = models.TextField(verbose_name='Заголовок 1')
-    head2 = models.TextField(verbose_name='Заголовок 2')
+    head1 = models.TextField(verbose_name='Заголовок 1', db_index=True)
+    head2 = models.TextField(verbose_name='Заголовок 2', null=True, blank=True, db_index=True)
     text = models.TextField(verbose_name='Текст объявления')
 
     def __str__(self):
@@ -33,7 +34,7 @@ class Advert(models.Model):
 
 
 class Page(models.Model):
-    url = models.CharField(max_length=500, verbose_name='URL страницы')
+    url = models.CharField(max_length=500, verbose_name='URL страницы', db_index=True)
     page_type = models.ForeignKey(PageType, on_delete=models.CASCADE, verbose_name='Тип URL')
     small_change = models.TextField(verbose_name='Тип мелкого изменения URL')
     comment = models.TextField(verbose_name='Описание мелк изм URL')
@@ -52,6 +53,7 @@ class Experiment(models.Model):
     expense = models.FloatField(verbose_name='Расход (руб.)', default=0)
     depth = models.FloatField(verbose_name='Глубина (стр.)', blank=True, null=True)
     conversion = models.FloatField(verbose_name='Конверсия (%)', blank=True, null=True)
+    duration = models.CharField(max_length=200)
 
     def __str__(self):
         return '{}'.format(self.request.name)
