@@ -26,7 +26,7 @@ def result_upload(request):
         form = ResultUpload(request.POST, request.FILES)
         if form.is_valid:
             excel = upload_result(request.FILES['company'], request.FILES['stat'])
-            return ('result.xlsx', excel)
+            return ('new_company.xlsx', excel)
     #return HttpResponseRedirect(reverse('ad:index'))
 
 

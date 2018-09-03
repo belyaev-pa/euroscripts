@@ -3,7 +3,7 @@ from django.db import models
 
 class Company(models.Model):
     name = models.CharField(max_length=256, verbose_name='Название компании', db_index=True)
-    number = models.BigIntegerField(verbose_name='Номер компании')
+    number = models.BigIntegerField(verbose_name='Номер компании', db_index=True, unique=True)
 
     def __str__(self):
         return '{}'.format(self.name)

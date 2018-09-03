@@ -27,15 +27,17 @@ def upload_scheme(file):
     first_sheet = wb.sheetnames[0]
     worksheet = wb[first_sheet]
     for row in range(2, worksheet.max_row + 1):
-        company_cell = "{}{}".format('A', row)
-        request_cell = "{}{}".format('B', row)
-        url_cell = "{}{}".format('C', row)
-        url_type_cell = "{}{}".format('D', row)
-        small_change_cell = "{}{}".format('E', row)
-        comment_cell = "{}{}".format('F', row)
-        head1_cell = "{}{}".format('G', row)
-        head2_cell = "{}{}".format('H', row)
-        text_cell = "{}{}".format('I', row)
+        company_id_cell = "{}{}".format('A', row)
+        company_cell = "{}{}".format('B', row)
+        request_cell = "{}{}".format('C', row)
+        url_cell = "{}{}".format('D', row)
+        url_type_cell = "{}{}".format('E', row)
+        small_change_cell = "{}{}".format('F', row)
+        comment_cell = "{}{}".format('G', row)
+        head1_cell = "{}{}".format('H', row)
+        head2_cell = "{}{}".format('I', row)
+        text_cell = "{}{}".format('J', row)
+        company_id = worksheet[company_id_cell].value
         company = worksheet[company_cell].value
         request = worksheet[request_cell].value
         url = worksheet[url_cell].value
@@ -51,7 +53,7 @@ def upload_scheme(file):
                                                       defaults={'page_type': url_type_obj,
                                                                 'small_change': small_change,
                                                                 'comment': comment, })
-        company_obj, created = Company.objects.get_or_create(name=company)
+        company_obj, created = Company.objects.get_or_create(number=company_id, defaults={'name': company, })
         request_obj, created = Request.objects.get_or_create(name=request, company=company_obj)
         advert_obj, created = Advert.objects.get_or_create(head1=head1, head2=head2,
                                                            defaults={'text': text, })
@@ -67,9 +69,9 @@ def upload_result(company_file, stat_file):
     wb = openpyxl.load_workbook(company_file)
     first_sheet = wb.sheetnames[0]
     worksheet = wb[first_sheet]
-    company_cell = "{}{}".format('E', 7)
-    company = worksheet[company_cell].value
-    company_obj = Company.objects.get(name=company)
+    company_id_cell = "{}{}".format('E', 8)
+    company_id = worksheet[company_id_cell].value
+    company_obj = Company.objects.get(number=company_id)
     experiment_scheme = ExperimentScheme.objects.filter(request__company=company_obj)
     request_list = dict()  # {request: list(head1, head2, url)]
     for row in range(12, worksheet.max_row + 1):
@@ -168,39 +170,42 @@ def make_report():
     worksheet = wb[first_sheet]
     t = time.time()
     experiment_list = ExperimentScheme.objects.all().order_by('request__company__name')
-    worksheet["A1"].value = 'Компания'
-    worksheet["B1"].value = 'Условие показа'
-    worksheet["C1"].value = 'Тип стр'
-    worksheet["D1"].value = 'Тип мелкого изменения'
-    worksheet["E1"].value = 'Описание мелк изм'
-    worksheet["F1"].value = 'URL'
-    worksheet["G1"].value = 'заг - 1'
-    worksheet["H1"].value = 'заг - 2'
-    worksheet["I1"].value = 'объявл'
-    worksheet["J1"].value = 'Завершен'
-    worksheet["K1"].value = 'Показы_Посл'
-    worksheet["L1"].value = 'Клики'
-    worksheet["M1"].value = 'CTR (%)'
-    worksheet["N1"].value = 'Расход (руб.)'
-    worksheet["O1"].value = 'Глубина (стр.)'
-    worksheet["P1"].value = 'Конверсии'
+    worksheet["A1"].value = '№ Компании'
+    worksheet["B1"].value = 'Компания'
+    worksheet["C1"].value = 'Условие показа'
+    worksheet["D1"].value = 'Тип стр'
+    worksheet["E1"].value = 'Тип мелкого изменения'
+    worksheet["F1"].value = 'Описание мелк изм'
+    worksheet["G1"].value = 'URL'
+    worksheet["H1"].value = 'заг - 1'
+    worksheet["I1"].value = 'заг - 2'
+    worksheet["J1"].value = 'объявл'
+    worksheet["K1"].value = 'Завершен'
+    worksheet["L1"].value = 'Показы_Посл'
+    worksheet["M1"].value = 'Клики'
+    worksheet["N1"].value = 'CTR (%)'
+    worksheet["O1"].value = 'Расход (руб.)'
+    worksheet["P1"].value = 'Глубина (стр.)'
+    worksheet["Q1"].value = 'Конверсии'
     for row, obj in enumerate(experiment_list, 2):
-        company_cell = "{}{}".format('A', row)
-        request_cell = "{}{}".format('B', row)
-        url_type_cell = "{}{}".format('C', row)
-        small_change_cell = "{}{}".format('D', row)
-        comment_cell = "{}{}".format('E', row)
-        url_cell = "{}{}".format('F', row)
-        head1_cell = "{}{}".format('G', row)
-        head2_cell = "{}{}".format('H', row)
-        text_cell = "{}{}".format('I', row)
-        complete_cell = "{}{}".format('J', row)
-        show_cell = "{}{}".format('K', row)
-        click_cell = "{}{}".format('L', row)
-        ctr_cell = "{}{}".format('M', row)
-        expense_cell = "{}{}".format('N', row)
-        depth_cell = "{}{}".format('O', row)
-        conversion_cell = "{}{}".format('P', row)
+        company_id_cell = "{}{}".format('A', row)
+        company_cell = "{}{}".format('B', row)
+        request_cell = "{}{}".format('C', row)
+        url_type_cell = "{}{}".format('D', row)
+        small_change_cell = "{}{}".format('E', row)
+        comment_cell = "{}{}".format('F', row)
+        url_cell = "{}{}".format('G', row)
+        head1_cell = "{}{}".format('H', row)
+        head2_cell = "{}{}".format('I', row)
+        text_cell = "{}{}".format('J', row)
+        complete_cell = "{}{}".format('K', row)
+        show_cell = "{}{}".format('L', row)
+        click_cell = "{}{}".format('M', row)
+        ctr_cell = "{}{}".format('N', row)
+        expense_cell = "{}{}".format('O', row)
+        depth_cell = "{}{}".format('P', row)
+        conversion_cell = "{}{}".format('Q', row)
+        worksheet[company_id_cell].value = obj.request.company.number
         worksheet[company_cell].value = obj.request.company.name
         worksheet[request_cell].value = obj.request.name
         worksheet[url_type_cell].value = obj.page.page_type.name
