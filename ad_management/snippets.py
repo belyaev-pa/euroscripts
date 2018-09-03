@@ -57,7 +57,7 @@ def upload_scheme(file):
                                                            defaults={'text': text, })
         ExperimentScheme.objects.get_or_create(request=request_obj,
                                                advert=advert_obj,
-                                               page=url_obj,)
+                                               page=url_obj, )
     print("end time upload_scheme - {}".format(str(time.time() - t)))
 
 
@@ -109,13 +109,11 @@ def upload_result(company_file, stat_file):
         expense = worksheet[expense_cell].value
         depth = worksheet[depth_cell].value
         conversion = worksheet[conversion_cell].value
-        page_obj = Page.objects.get(url=request_list[request][2])
-        advert_obj = Advert.objects.get(head1=request_list[request][0],
-                                        head2=request_list[request][1])
-        request_obj = Request.objects.get(name=request)
-        Experiment.objects.create(request=request_obj,
-                                  advert=advert_obj,
-                                  page=page_obj,
+        experiment_scheme_obj = ExperimentScheme.objects.get(request__name=request,
+                                                             advert__head1=request_list[request][0],
+                                                             advert__head2=request_list[request][1],
+                                                             page__url=request_list[request][2], )
+        Experiment.objects.create(scheme=experiment_scheme_obj,
                                   show=show,
                                   click=click,
                                   ctr=ctr,
@@ -125,16 +123,12 @@ def upload_result(company_file, stat_file):
                                   duration=duration, )
     experiment_ended = dict()
     for key, value in request_list.items():
-        # phrase_frequency = phrase_with_phrase.aggregate(Sum('frequency'))
-        experiment_list = Experiment.objects.filter(page__url=value[2],
-                                                    advert__head1=value[0],
-                                                    advert__head2=value[1],
-                                                    request__name=key)
+        experiment = ExperimentScheme.objects.get(request__name=key,
+                                                  advert__head1=value[0],
+                                                  advert__head2=value[1],
+                                                  page__url=value[2])
+        experiment_list = Experiment.objects.filter(scheme=experiment)
         if experiment_list.aggregate(Sum('show'))['show__sum'] > settings.CLICK_AMOUNT:
-            experiment = ExperimentScheme.objects.get(page__url=value[2],
-                                                      advert__head1=value[0],
-                                                      advert__head2=value[1],
-                                                      request__name=key)
             experiment.completed = True
             experiment.save()
             experiment_ended[key] = value
@@ -174,6 +168,22 @@ def make_report():
     worksheet = wb[first_sheet]
     t = time.time()
     experiment_list = ExperimentScheme.objects.all().order_by('request__company__name')
+    worksheet["A1"].value = 'Компания'
+    worksheet["B1"].value = 'Условие показа'
+    worksheet["C1"].value = 'Тип стр'
+    worksheet["D1"].value = 'Тип мелкого изменения'
+    worksheet["E1"].value = 'Описание мелк изм'
+    worksheet["F1"].value = 'URL'
+    worksheet["G1"].value = 'заг - 1'
+    worksheet["H1"].value = 'заг - 2'
+    worksheet["I1"].value = 'объявл'
+    worksheet["J1"].value = 'Завершен'
+    worksheet["K1"].value = 'Показы_Посл'
+    worksheet["L1"].value = 'Клики'
+    worksheet["M1"].value = 'CTR (%)'
+    worksheet["N1"].value = 'Расход (руб.)'
+    worksheet["O1"].value = 'Глубина (стр.)'
+    worksheet["P1"].value = 'Конверсии'
     for row, obj in enumerate(experiment_list, 2):
         company_cell = "{}{}".format('A', row)
         request_cell = "{}{}".format('B', row)
@@ -201,10 +211,11 @@ def make_report():
         worksheet[head2_cell].value = obj.advert.head2
         worksheet[text_cell].value = obj.advert.text
         worksheet[complete_cell].value = obj.completed
-        experiment_obj = Experiment.objects.filter(page__url=obj.page.url,
-                                                   advert__head1=obj.advert.head1,
-                                                   advert__head2=obj.advert.head2,
-                                                   request__name=obj.request.name)
+        experiment_scheme_obj = ExperimentScheme.objects.get(page__url=obj.page.url,
+                                                             advert__head1=obj.advert.head1,
+                                                             advert__head2=obj.advert.head2,
+                                                             request__name=obj.request.name)
+        experiment_obj = Experiment.objects.filter(scheme=experiment_scheme_obj)
         worksheet[show_cell].value = experiment_obj.aggregate(Sum('show'))['show__sum']
         worksheet[click_cell].value = experiment_obj.aggregate(Sum('click'))['click__sum']
         worksheet[ctr_cell].value = experiment_obj.aggregate(Sum('ctr'))['ctr__sum']

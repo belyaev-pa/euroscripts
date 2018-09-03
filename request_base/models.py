@@ -48,7 +48,7 @@ class TagPhrase(models.Model):
 
 
 class Url(models.Model):
-    name = models.CharField(max_length=500)
+    name = models.CharField(max_length=500, db_index=True)
 
 
 class SearchReport(models.Model):

@@ -43,10 +43,18 @@ class Page(models.Model):
         return '{}'.format(self.url)
 
 
-class Experiment(models.Model):
+class ExperimentScheme(models.Model):
     request = models.ForeignKey(Request, on_delete=models.CASCADE, verbose_name='Запрос')
     advert = models.ForeignKey(Advert, on_delete=models.CASCADE, verbose_name='Объявление')
     page = models.ForeignKey(Page, on_delete=models.CASCADE, verbose_name='Страница')
+    completed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return '{}'.format(self.page.url)
+
+
+class Experiment(models.Model):
+    scheme = models.ForeignKey(ExperimentScheme, on_delete=models.CASCADE, verbose_name='Схема эксперимента')
     show = models.IntegerField(verbose_name='Показы', default=0)
     click = models.IntegerField(verbose_name='Клики', default=0)
     ctr = models.FloatField(verbose_name='CTR %', default=0)
@@ -56,11 +64,7 @@ class Experiment(models.Model):
     duration = models.CharField(max_length=200)
 
     def __str__(self):
-        return '{}'.format(self.request.name)
+        return '{}'.format(self.scheme.request.name)
 
 
-class ExperimentScheme(models.Model):
-    request = models.ForeignKey(Request, on_delete=models.CASCADE, verbose_name='Запрос')
-    advert = models.ForeignKey(Advert, on_delete=models.CASCADE, verbose_name='Объявление')
-    page = models.ForeignKey(Page, on_delete=models.CASCADE, verbose_name='Страница')
-    completed = models.BooleanField(default=False)
+
