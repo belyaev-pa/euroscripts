@@ -19,18 +19,23 @@ class Command(BaseCommand):
                 for iter, row in enumerate(get_data(os.path.join(root, file)), 1):
                     if iter == 1:
                         continue
+                    url_ref = row[7]
+                    url_ref = url_ref.split('?')[0]
+                    url_ref = url_ref.replace('www.', '').replace('https', 'http').lower()
+                    if url_ref[-1] == '/':
+                        url_ref = url_ref[0:-1]
                     yandex_dict = dict(
                         phrase = row[0],
                         advert = row[1],
                         position = row[2],
-                        month_show = int(str(row[3]).replace('.', '').replace(' ', '').replace(',', '') or '1'),
-                        average_cpc = float(str(row[4]).replace(',', '.').replace(' ', '') or '1'),
-                        traffic = float(str(row[5]).replace(',', '.').replace(' ', '') or '1'),
-                        rival = int(str(row[6]).replace('.', '').replace(' ', '').replace(',', '') or '1'),
-                        url = row[7],
+                        month_show = int(str(row[3]).replace('.', '').replace(' ', '').replace(',', '') or '0'),
+                        average_cpc = float(str(row[4]).replace(',', '.').replace(' ', '') or '0'),
+                        traffic = float(str(row[5]).replace(',', '.').replace(' ', '') or '0'),
+                        rival = int(str(row[6]).replace('.', '').replace(' ', '').replace(',', '') or '0'),
+                        url = url_ref,
                     )
                     bulk_list['phrase'].add(row[0])
-                    bulk_list['url'].add(row[7])
+                    bulk_list['url'].add(url_ref)
                     bulk_list['yandex'].append(yandex_dict)
                     if iter % 5000 == 0:
                         phrase_obj = Phrase.objects.filter(
@@ -84,6 +89,5 @@ class Command(BaseCommand):
                     if bulk_list['yandex']:
                         YandexDirect.objects.bulk_create(
                             [YandexDirect(**i) for i in bulk_list['yandex']], len(bulk_list['yandex']))
-                    bulk_list = dict(yandex=list(), url=set(), phrase=set())
                     print('ended{}'.format(file))
 

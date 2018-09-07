@@ -22,7 +22,9 @@ class Command(BaseCommand):
         #     if value[7] == '.':
         #         value = value[:7]+value[7+1:]
         #     url.name = value
-        #
+        #     url.save()
+        #     print("iter {} time - {}".format(i, str(time.time() - t)))
+
         while True:
             try:
                 url = Url.objects.all()[i]
