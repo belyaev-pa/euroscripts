@@ -141,6 +141,8 @@ YANDEX_ROOT = '/home/razrab4/Downloads/yandex_upload'
 SEARCH_REPORT_ROOT = '/home/razrab4/Downloads/search_report_upload'
 DECODE_INPUT = '/home/razrab4/Downloads/decode_output'
 URL_OUTPUT = '/home/razrab4/Downloads/urls.csv'
+MEMORY_PROFILE_LOG = '/home/razrab4/Downloads/memory_profile.log'
+PANDAS_COLUMNS = ['phrase', 'words', 'phrase_len', 'frequency', 'id']
 
 
 CLICK_AMOUNT = 100
