@@ -37,5 +37,3 @@ class Command(BaseCommand):
         #     phrase_list.filter(pk=obj[0]).update(sort=obj[1])
         print('phrase update completed')
 
-
-

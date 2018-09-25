@@ -4,6 +4,7 @@ from django.conf import settings
 from ...models import *
 from ...snippets import timer
 import time
+from collections import OrderedDict
 import pandas as pd
 from memory_profiler import profile
 
@@ -11,8 +12,8 @@ from memory_profiler import profile
 class Command(BaseCommand):
     """сортировка списка фраз по хитрой Гришиной схеме (аля граф)"""
     # global variables
-    input_list = list()
-    output_list = list()
+    input_dict = OrderedDict()
+    output_dict = OrderedDict()
     phrase_to_update = list()
     t = time.time()
     number = 1
@@ -44,46 +45,46 @@ class Command(BaseCommand):
                                  )[:3].values_list('phrase__phrase', 'word__word'))
         return result
 
+    #можно оптимизировать by values_list
     @timer
     @profile(stream=fp)
     def get_phrase_with_word_list(self, word):
         """
-        tuples = [
-            (request, set, len, frequency, id),
-            (request, set, len, frequency, id),
-            (request, set, len, frequency, id),
+        dicts = [
+            request: [set, len, frequency, id, bool],
+            request: [set, len, frequency, id, bool],
+            request: [set, len, frequency, id, bool],
         ]                                """
-        print("start - {}".format(str(time.time() - self.t)))
-        tuples_list = list()
-        i = 1
-        for obj in Phrase.objects.filter(phrase_len__gte=1).filter(link__word__word__icontains=word):
+        query = Phrase.objects.filter(phrase_len__gte=1
+                             ).filter(link__word__word__icontains=word).order_by('phrase_len', '-frequency')
+        for obj in query:
             phrase_word_list = obj.link_set.values_list('word__word', flat=True)
-            tuple_element = (obj.phrase, set(phrase_word_list), obj.phrase_len, obj.frequency, obj.id)
-            tuples_list.append(tuple_element)
-            print('Итерация № {} , я работаю уже: {} с.'.format(i, str(time.time() - self.t)))
-            i += 1
-        self.input_list = sorted(tuples_list, key=lambda x: (x[2], -x[3]))
+            self.input_dict[obj.phrase] = [set(phrase_word_list), obj.phrase_len, obj.frequency, obj.id, False]
 
     @profile(stream=fp)
-    def recursion_sort(self, obj, number, level):
-        s = level + str(number)
-        self.output_list.append((*obj, s))
-        self.input_list.remove(obj)
-        self.phrase_to_update.append((obj[4], s))
+    def recursion_sort(self, obj, number, st):
+        s = st + str(number)
+        print(s)
+        print(obj)
+        self.output_dict[obj] = [*self.input_dict[obj], s]
+        self.input_dict[obj][4] = True
+        self.phrase_to_update.append((self.input_dict[obj][3], s))
         counter = 1
-        for item in self.input_list:
-            if obj[1].issubset(item[1]):
-                self.recursion_sort(item, counter, s + '.')
-                counter += 1
+        for key, value in self.input_dict.items():
+            if not value[4]:
+                if value[0].issuperset(self.input_dict[obj][0]) and len(value[0])>len(self.input_dict[obj][0]):
+                    self.recursion_sort(key, counter, s + '.')
+                    counter += 1
         return 0
 
     @timer
     @profile(stream=fp)
     def process(self):
-        while self.input_list:
-            self.recursion_sort(self.input_list[False], self.number, str(self.global_counter)+'.')
-            print('Итерация № {} , я работаю уже: {} с.'.format(self.number, str(time.time() - self.t)))
-            self.number += 1
+        for key, value in self.input_dict.items():
+            if not value[4]:
+                self.recursion_sort(key, self.number, str(self.global_counter)+'.')
+                print('Итерация № {} , я работаю уже: {} с.'.format(self.number, str(time.time() - self.t)))
+                self.number += 1
 
     @timer
     @profile(stream=fp)
@@ -91,8 +92,8 @@ class Command(BaseCommand):
         with open(self.csv_output_file, 'a+', newline='', encoding='Windows-1251') as output_file:
             word_writer = csv.writer(output_file, delimiter=';',
                                      quotechar='|', quoting=csv.QUOTE_MINIMAL)
-            for obj in self.output_list:
-                word_writer.writerow([obj[0], obj[2], obj[3], obj[5]])
+            for key, value in self.output_dict.items():
+                word_writer.writerow([key, value[1], value[2], value[5]])
         print('csv write completed')
 
     @timer
@@ -108,7 +109,7 @@ class Command(BaseCommand):
     @timer
     @profile(stream=fp)
     def obj_reset(self):
-        self.output_list = list()
+        self.output_dict = OrderedDict()
         self.phrase_to_update = list()
         self.number = 1
         self.global_counter += 1
